@@ -38,6 +38,10 @@ class Therapist
     @out.puts issue['body']
   end
 
+  def fetch
+    fetch_issues
+  end
+
   def open_issues
     YAML.load(File.read(open_issues_file))['issues']
   end
@@ -54,7 +58,7 @@ class Therapist
     end
 
     open_issues.each do |issue|
-      fetch_issue(issue['issue'])
+      fetch_issue(issue['number'])
     end
   end
 

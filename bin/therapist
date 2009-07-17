@@ -10,7 +10,7 @@ class Therapist::Commands
   command :list do
     # Lists issues for the current repository
     #
-    # USAGE
+    # USAGE:
     #
     #     $ cd path/to/git/repo
     #     $ therapist list
@@ -20,12 +20,21 @@ class Therapist::Commands
   command :show do |number|
     # Shows a specific issue for the current repository
     #
-    # USAGE
+    # USAGE:
     #
     #     $ cd path/to/git/repo
     #     $ therapist show <number>
     number.gsub!('#', '')
     Therapist.new.show(number)
+  end
+
+  command :fetch do
+    # Fetches issues for the current repository
+    # USAGE:
+    #
+    #     $ cd path/to/git/repo
+    #     $ therapist list
+    Therapist.new.fetch
   end
 end
 
