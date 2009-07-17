@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{therapist}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Josh Nichols"]
-  s.date = %q{2009-07-16}
+  s.date = %q{2009-07-17}
   s.default_executable = %q{therapist}
   s.description = %q{Therapist is a command line tool to help you interact with GitHub issues. Also supports offline viewing of said issues.}
   s.email = %q{josh@technicalpickles.com}
@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
      "bin/therapist",
      "lib/therapist.rb",
      "test/test_helper.rb",
-     "test/therapist_test.rb"
+     "test/therapist_test.rb",
+     "therapist.gemspec"
   ]
   s.homepage = %q{http://github.com/technicalpickles/therapist}
   s.rdoc_options = ["--charset=UTF-8"]
