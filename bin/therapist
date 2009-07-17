@@ -2,6 +2,7 @@
 
 require 'git'
 require 'net/http'
+require 'optimus_prime'
 
 class Therapist
   attr_accessor :username, :repository
@@ -25,6 +26,21 @@ class Therapist
     end
   end
 
+  def show(number)
+    fetch_issue(number) unless File.exist?(issue_file(number))
+
+    issue = YAML.load(File.read(issue_file(number)))['issue']
+
+    @out.puts "##{issue['number']} #{issue['state']}: #{issue['title']}"
+    @out.puts
+    @out.puts "user   : #{issue['user']}"
+    @out.puts "created: #{issue['created_at']}"
+    @out.puts "updated: #{issue['updated_at']}"
+    @out.puts "votes  : #{issue['votes']}"
+    @out.puts
+    @out.puts issue['body']
+  end
+
   def open_issues
     YAML.load(File.read(open_issues_file))['issues']
   end
@@ -41,11 +57,16 @@ class Therapist
     end
 
     open_issues.each do |issue|
-      response = Net::HTTP.get(URI.parse(show_issues_url(issue['number'])))
+      fetch_issue(issue['issue'])
+    end
+  end
 
-      File.open "#{issues_dir}/#{issue['number']}.yml", "w" do |file|
-        file.write response
-      end
+  def fetch_issue(number)
+    FileUtils.mkdir_p(issues_dir)
+    response = Net::HTTP.get(URI.parse(show_issues_url(number)))
+
+    File.open issue_file(number), "w" do |file|
+      file.write response
     end
   end
 
@@ -65,6 +86,23 @@ class Therapist
     "#{issues_dir}/open.yml"
   end
 
+  def issue_file(number)
+    "#{issues_dir}/#{number}.yml"
+  end
+
 end
 
-Therapist.new.list
+class Commands
+  include OptimusPrime
+
+  command :list do
+    Therapist.new.list
+  end
+
+  command :show do |number|
+    number.gsub!('#', '')
+    Therapist.new.show(number)
+  end
+end
+
+Commands.new
