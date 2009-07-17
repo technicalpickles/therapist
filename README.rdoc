@@ -1,6 +1,47 @@
 = therapist
 
-Description goes here.
+A command line tool for dealing with your (GitHub) issues.
+
+Install it:
+
+    $ sudo gem install technicalpickles-therapist
+
+
+It works by guessing groking a git repository to figure out the user and repository on GitHub, and then hitting their API to get the issues. The issues get stashed in .git/issues to avoid constantly hitting the API, and for offline convenience.
+
+Here's how you might use it:
+
+    $ cd jeweler
+    $ therapist list
+    #1     open: Windows Compatibility
+    #2     open: remove jeweler tasks' dependence on rake i.e. to allow thor to use the tasks
+    #6     open: Project creation failing (adding origin remote)
+    #8     open: rubyforge:release failing because no processor_id or release_id configured for
+    #9     open: rake rubyforge:setup creates duplicate packages
+    #13    open: GitHub Pages - RDoc to Branch
+    #16    open: 'rake release' not idempotent after failure
+    #18    open: RDoc rake task looks for VERSION.yml but plaintext is now default
+    #19    open: Jeweler can not read my ~/.gitconfig
+    #20    open: The Umlaut problem: UTF-8 chars get converted to unicode entities
+    #21    open: generating new project double quotes author and e-mail in Rakefile
+    #22    open: no such file to load -- shoulda (LoadError)
+    #23    open: .gitignore files showing up in s.test_files section of gemspec
+    
+Knowing an issue you want to look in, you can show more details:
+
+
+    $ therapist show 22
+    #22 open: no such file to load -- shoulda (LoadError)
+
+    user   : thopre
+    created: Sat Jul 04 06:03:35 -0400 2009
+    updated: Sat Jul 04 06:03:35 -0400 2009
+    votes  : 0
+
+    I get these errors when i try to do a 'rake test':
+
+    <snipped for brevity>
+    
 
 == Copyright
 
