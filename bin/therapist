@@ -96,10 +96,22 @@ class Commands
   include OptimusPrime
 
   command :list do
+    # Lists issues for the current repository
+    #
+    # USAGE
+    #
+    #     $ cd path/to/git/repo
+    #     $ therapist list
     Therapist.new.list
   end
 
   command :show do |number|
+    # Shows a specific issue for the current repository
+    #
+    # USAGE
+    #
+    #     $ cd path/to/git/repo
+    #     $ therapist show <number>
     number.gsub!('#', '')
     Therapist.new.show(number)
   end
