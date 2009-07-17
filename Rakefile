@@ -5,10 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "therapist"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{Helps you deal with your (GitHub) issues}
+    gem.description = %Q{Therapist is a command line tool to help you interact with GitHub issues. Also supports offline viewing of said issues.}
     gem.email = "josh@technicalpickles.com"
     gem.homepage = "http://github.com/technicalpickles/therapist"
     gem.authors = ["Josh Nichols"]
+    gem.add_dependency "nakajima-nakajima"
+    gem.add_dependency "nakajima-optimus-prime"
+    gem.add_dependency "git"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
