@@ -42,6 +42,10 @@ Knowing an issue you want to look in, you can show more details:
 
     <snipped for brevity>
     
+== Limitations
+
+ * Issues only ever get fetchd once. They should get stale after a while, or you should be able to force a download
+ * Was built as a 1 hour spike before Railscamp NE, so no tests yet
 
 == Copyright
 
