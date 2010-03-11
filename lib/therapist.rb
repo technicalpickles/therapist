@@ -45,8 +45,22 @@ class Therapist < Thor
     @out.puts "created: #{issue['created_at']}"
     @out.puts "updated: #{issue['updated_at']}"
     @out.puts "votes  : #{issue['votes']}"
-    @out.puts
+    @out.puts "="*80
     @out.puts issue['body']
+
+    fetch_issue_comments(number) unless issue_comments_file(number).exist?
+    comments = YAML.load(issue_comments_file(number).read)['comments']
+
+    @out.puts
+    @out.puts "Comments:"
+    comments.each do |comment|
+      @out.puts "="*80
+      @out.puts "#{comment['user']} wrote on #{comment['created_at']}"
+      @out.puts "="*80
+      @out.puts comment['body']
+      @out.puts
+    end
+
   end
 
   desc "fetch", "Fetches issues for the current repository"
@@ -60,10 +74,7 @@ class Therapist < Thor
     YAML.load(open_issues_file.read)['issues']
   end
 
-
   def fetch_issues
-    FileUtils.mkdir_p(issues_dir)
-
     response = Net::HTTP.get(URI.parse(list_issues_url))
 
     File.open open_issues_file, "w" do |file|
@@ -76,7 +87,6 @@ class Therapist < Thor
   end
 
   def fetch_issue(number)
-    FileUtils.mkdir_p(issues_dir)
     response = Net::HTTP.get(URI.parse(show_issue_url(number)))
 
     File.open issue_file(number), "w" do |file|
@@ -84,12 +94,25 @@ class Therapist < Thor
     end
   end
 
+  def fetch_issue_comments(number)
+    response = Net::HTTP.get(URI.parse(show_issue_comments_url(number)))
+    File.open issue_comments_file(number), "w" do |file|
+      file.write response
+    end
+  end
+
   def issues_dir
     @issues_dir ||= Pathname.new('.git/issues')
+    @issues_dir.mkdir unless @issues_dir.exist?
+    @issues_dir
   end
 
   def show_issue_url(number)
     "http://github.com/api/v2/yaml/issues/show/#{username}/#{repository}/#{number}"
+  end
+
+  def show_issue_comments_url(number)
+    "http://github.com/api/v2/yaml/issues/comments/#{username}/#{repository}/#{number}"
   end
 
   def list_issues_url
@@ -102,6 +125,10 @@ class Therapist < Thor
 
   def issue_file(number)
     issues_dir.join("#{number}.yml")
+  end
+
+  def issue_comments_file(number)
+    issues_dir.join("#{number}-comments.yml")
   end
 
 end
