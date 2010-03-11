@@ -1,41 +1,9 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'pathname'
+lib = Pathname.new(__FILE__).dirname.join('..', 'lib').expand_path
+$LOAD_PATH.unshift.unshift lib.to_s unless $LOAD_PATH.include?(lib.to_s)
+
 require 'therapist'
-require 'optimus_prime'
 
-class Therapist::Commands
-  include OptimusPrime
-
-  command :list do
-    # Lists issues for the current repository
-    #
-    # USAGE:
-    #
-    #     $ cd path/to/git/repo
-    #     $ therapist list
-    Therapist.new.list
-  end
-
-  command :show do |number|
-    # Shows a specific issue for the current repository
-    #
-    # USAGE:
-    #
-    #     $ cd path/to/git/repo
-    #     $ therapist show <number>
-    number.gsub!('#', '')
-    Therapist.new.show(number)
-  end
-
-  command :fetch do
-    # Fetches issues for the current repository
-    # USAGE:
-    #
-    #     $ cd path/to/git/repo
-    #     $ therapist list
-    Therapist.new.fetch
-  end
-end
-
-Therapist::Commands.new
+Therapist.start

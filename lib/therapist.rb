@@ -1,9 +1,15 @@
 require 'git'
 require 'net/http'
+require 'thor'
+require 'yaml'
+require 'pathname'
 
-class Therapist
-  attr_accessor :username, :repository
-  def initialize()
+class Therapist < Thor
+  no_tasks do
+    attr_accessor :username, :repository
+  end
+
+  def initialize(args = [], options={}, config={})
     git = Git.open(Dir.pwd)
 
     origin_url = git.remote('origin').url
@@ -12,9 +18,12 @@ class Therapist
     @repository = $2
 
     @out = $stdout
+
+    super
   end
 
 
+  desc "list", "Lists issues for the current repository"
   def list
     fetch_issues unless File.exist?(open_issues_file)
 
@@ -23,10 +32,12 @@ class Therapist
     end
   end
 
+  desc "show NUMBER", "Shows a specific issue for the current repository"
   def show(number)
-    fetch_issue(number) unless File.exist?(issue_file(number))
+    number.gsub!('#', '')
+    fetch_issue(number) unless issue_file(number).exist?
 
-    issue = YAML.load(File.read(issue_file(number)))['issue']
+    issue = YAML.load(issue_file(number).read)['issue']
 
     @out.puts "##{issue['number']} #{issue['state']}: #{issue['title']}"
     @out.puts
@@ -38,15 +49,17 @@ class Therapist
     @out.puts issue['body']
   end
 
+  desc "fetch", "Fetches issues for the current repository"
   def fetch
     fetch_issues
   end
 
+  private
+
   def open_issues
-    YAML.load(File.read(open_issues_file))['issues']
+    YAML.load(open_issues_file.read)['issues']
   end
 
-  private
 
   def fetch_issues
     FileUtils.mkdir_p(issues_dir)
@@ -64,7 +77,7 @@ class Therapist
 
   def fetch_issue(number)
     FileUtils.mkdir_p(issues_dir)
-    response = Net::HTTP.get(URI.parse(show_issues_url(number)))
+    response = Net::HTTP.get(URI.parse(show_issue_url(number)))
 
     File.open issue_file(number), "w" do |file|
       file.write response
@@ -72,10 +85,10 @@ class Therapist
   end
 
   def issues_dir
-    '.git/issues'
+    @issues_dir ||= Pathname.new('.git/issues')
   end
 
-  def show_issues_url(number)
+  def show_issue_url(number)
     "http://github.com/api/v2/yaml/issues/show/#{username}/#{repository}/#{number}"
   end
 
@@ -84,11 +97,11 @@ class Therapist
   end
 
   def open_issues_file
-    "#{issues_dir}/open.yml"
+    @open_issues_file ||= issues_dir.join('open.yml')
   end
 
   def issue_file(number)
-    "#{issues_dir}/#{number}.yml"
+    issues_dir.join("#{number}.yml")
   end
 
 end
