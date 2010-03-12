@@ -1,24 +1,19 @@
 require 'rubygems'
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "therapist"
-    gem.summary = %Q{Helps you deal with your (GitHub) issues}
-    gem.description = %Q{Therapist is a command line tool to help you interact with GitHub issues. Also supports offline viewing of said issues.}
-    gem.email = "josh@technicalpickles.com"
-    gem.homepage = "http://github.com/technicalpickles/therapist"
-    gem.authors = ["Josh Nichols"]
-    gem.add_dependency "nakajima-nakajima"
-    gem.add_dependency "nakajima-optimus-prime"
-    gem.add_dependency "git"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  gem.name = "therapist"
+  gem.summary = %Q{Helps you deal with your (GitHub) issues}
+  gem.description = %Q{Therapist is a command line tool to help you interact with GitHub issues. Also supports offline viewing of said issues.}
+  gem.email = "josh@technicalpickles.com"
+  gem.homepage = "http://github.com/technicalpickles/therapist"
+  gem.authors = ["Josh Nichols"]
+  gem.add_dependency "thor"
+  gem.add_dependency "git"
+  # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 end
+Jeweler::GemcutterTasks.new
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
