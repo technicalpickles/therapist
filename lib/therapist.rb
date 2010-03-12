@@ -83,6 +83,7 @@ class Therapist < Thor
 
     open_issues.each do |issue|
       fetch_issue(issue['number'])
+      fetch_issue_comments(issue['number'])
     end
   end
 
